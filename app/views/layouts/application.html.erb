@@ -34,10 +34,10 @@
         </li>
       </ul>
       <ul class="nav app-header__user-nav-container">
-        <% if @login_user %>
+        <% if @current_user %>
 
         <li class="nav-item app-header__nav_item">
-          <%= link_to "Logged in as #{@login_user.username}", user_path(@login_user), class: "btn btn-primary" %>
+          <%= link_to "Logged in as #{@current_user.username}", user_path(@current_user), class: "btn btn-primary" %>
         </li>
         <li class="nav-item app-header__nav_item">
           <%= link_to "Log Out", logout_path, method: "delete", class: "btn btn-primary" %>

@@ -62,15 +62,15 @@ class WorksController < ApplicationController
   end
 
   def upvote
-    if @login_user
-      vote = Vote.new(user: @login_user, work: @work)
-      if vote.save
-        flash[:status] = :success
-        flash[:result_text] = "Successfully upvoted!"
-      else
-        flash[:result_text] = "Could not upvote"
-        flash[:messages] = vote.errors.messages
-      end
+
+    vote = Vote.new(user: @current_user, work: @work)
+    if vote.save
+      flash[:status] = :success
+      flash[:result_text] = "Successfully upvoted!"
+    else
+      flash[:status] = :failure
+      flash[:result_text] = "Could not upvote"
+      flash[:messages] = vote.errors.messages
     end
     # Refresh the page to show either the updated vote count
     # or the error message

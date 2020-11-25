@@ -2,33 +2,102 @@ require "test_helper"
 
 describe WorksController do
   let(:existing_work) { works(:album) }
+  describe "logged out " do
+    describe "root" do
+      it "succeeds with all media types" do
+        get root_path
 
-  describe "root" do
-    it "succeeds with all media types" do
-      get root_path
-
-      must_respond_with :success
-    end
-
-    it "succeeds with one media type absent" do
-      only_book = works(:poodr)
-      only_book.destroy
-
-      get root_path
-
-      must_respond_with :success
-    end
-
-    it "succeeds with no media" do
-      Work.all do |work|
-        work.destroy
+        must_respond_with :success
       end
 
-      get root_path
+      it "succeeds with one media type absent" do
+        only_book = works(:poodr)
+        only_book.destroy
 
-      must_respond_with :success
+        get root_path
+
+        must_respond_with :success
+      end
+
+      it "succeeds with no media" do
+        Work.all do |work|
+          work.destroy
+        end
+
+        get root_path
+
+        must_respond_with :success
+      end
+    end
+
+    describe "index" do
+      it "blocks logged out users " do
+        get works_path
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to root_path
+      end
+    end
+    describe "show" do
+      it "blocks logged out users " do
+        get work_path(works(:movie).id)
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to root_path
+      end
+    end
+    describe "new" do
+      it "blocks logged out users " do
+        get new_work_path(works(:movie).id)
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to root_path
+      end
+    end
+    describe "create" do
+      it "blocks logged out users " do
+        new_work = { work: { title: "Dirty Computer", category: "album" } }
+
+        expect{
+          post works_path, params: new_work
+        }.wont_change "Work.count"
+
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to root_path
+      end
+    end
+
+    describe "edit" do
+      it "blocks logged out users " do
+        get edit_work_path(works(:movie).id)
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to root_path
+      end
+    end
+    describe "update" do
+      it "blocks logged out users " do
+
+      end
+    end
+    describe "destroy" do
+      it "blocks logged out users " do
+
+      end
     end
   end
+
 
   CATEGORIES = %w(albums books movies)
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
