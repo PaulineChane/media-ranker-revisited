@@ -229,18 +229,31 @@ describe WorksController do
         must_redirect_to work_path(existing_work.id)
       end
 
-      it "renders 404 not_found for a bogus work ID" do
+      it "redirects to all works index for a bogus work ID" do
         bogus_id = existing_work.id
         existing_work.destroy
 
         get edit_work_path(bogus_id)
 
-        must_respond_with :not_found
+        must_redirect_to works_path
       end
     end
     describe "update" do
       it "prevents user from updating work that they didnt create" do
-        
+        updates = { work: { title: "Dirty Computer" } }
+        original_title = existing_work.title
+        expect {
+          put work_path(existing_work.id), params: updates
+        }.wont_change "Work.count"
+        not_updated_work = Work.find_by(id: existing_work.id)
+
+        expect(not_updated_work.title).must_equal original_title
+        expect(flash[:result_text]).must_equal "Forbidden access. You may be trying to modify a work you didn't add."
+
+        # i'm editing this from the original tests : do these mean different things?
+        # :success and :not_found tend have different statuses, i thought??
+        must_respond_with :redirect
+        must_redirect_to work_path(existing_work.id)
       end
       it "succeeds for valid data and an extant work ID belonging to the user" do
         updates = { work: { title: "Dirty Computer" } }
