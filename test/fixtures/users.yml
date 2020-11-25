@@ -11,3 +11,9 @@ kari:
   uid: 45678
   username: kari
   email: kari@site.com
+
+pauline:
+  provider: github
+  uid: 23456
+  username: pauline
+  email: pauline@site.com

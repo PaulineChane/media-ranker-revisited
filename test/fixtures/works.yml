@@ -6,6 +6,7 @@ album:
   description: This is an older album
   publication_year: 1955-11-01
   category: album
+  user: pauline
 
 another_album:
   title: New Title
@@ -13,6 +14,7 @@ another_album:
   description: This is a newer album
   publication_year: 2016-04-08
   category: album
+  user: pauline
 
 poodr:
   title: Practical Object Oriented Design in Ruby
@@ -20,7 +22,9 @@ poodr:
   description: programming!
   publication_year: 2012
   category: book
+  user: kari
 
 movie:
   title: test movie - has only required fields
   category: movie
+  user: dan

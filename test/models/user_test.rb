@@ -17,6 +17,8 @@ describe User do
         expect(work).must_be_kind_of Work
       end
     end
+
+
   end
 
   describe "validations" do

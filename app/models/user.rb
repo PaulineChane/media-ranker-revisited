@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_many :books
+  has_many :works
   has_many :votes
   has_many :ranked_works, through: :votes, source: :work
 
