@@ -44,4 +44,24 @@ describe UsersController do
       assert_nil(session[:user_id])
     end
   end
+
+
+  describe "destroy" do
+    before do
+      perform_login(users(:dan))
+    end
+    it "can logout an existing user" do
+      # Arrange
+
+      expect(session[:user_id]).must_equal users(:dan).id
+
+      delete logout_path, params: {}
+
+      assert_nil(session[:user_id])
+      must_redirect_to root_path
+    end
+
+    it "guest users on that route" do
+    end
+  end
 end
