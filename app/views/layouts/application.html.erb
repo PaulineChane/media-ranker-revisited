@@ -46,7 +46,11 @@
         <% else %>
 
         <li class="nav-item app-header__nav_item">
-          <%= link_to "Login with GitHub", github_login_path %>
+          <% if session[:user_id] %>
+            <%= link_to "Log out", logout_path, method: "delete" %>
+          <% else %>
+            <%= link_to "Login with Github", github_login_path %>
+          <% end %>
         </li>
         <% end %>
 
