@@ -1,8 +1,8 @@
 class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
-  before_action :must_be_owner, only: [:edit, :update, :destroy]
   before_action :require_login, except: [:root]
+  # before_action :must_be_owner, only: [:edit, :update, :destroy]
   before_action :category_from_work, except: [:root, :index, :new, :create]
 
   def root
@@ -17,11 +17,11 @@ class WorksController < ApplicationController
   end
 
   def new
-    @work = @current_merchant.work.new
+    @work = @current_user.works.new
   end
 
   def create
-    @work = @current_merchant.work.new(media_params)
+    @work = @current_user.works.new(media_params)
     @media_category = @work.category
     if @work.save
       flash[:status] = :success
@@ -91,9 +91,9 @@ class WorksController < ApplicationController
   end
 
   def must_be_owner
-    current_user
+    @current_user = User.find_by_id(session[:user_id])
     @work = Work.find_by(id: params[:id])
-    if @current_user.nil? ||@work.user != @current_user
+    if @current_user.nil? || @work.user != @current_user
       flash.now[:status] = :failure
       flash.now[:result_text] = "Forbidden access. You may be trying to modify a work you didn't add."
       redirect_back fallback_location: root_path
