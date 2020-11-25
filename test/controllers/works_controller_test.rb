@@ -278,7 +278,7 @@ describe WorksController do
       end
     end
     describe "upvote" do
-      it "redirects to the work page after the user has logged out" do
+      it "redirects to the root page after the user has logged out" do
         expect(session[:user_id]).must_equal users(:dan).id
 
         delete logout_path params:{}
@@ -290,7 +290,7 @@ describe WorksController do
         assert_nil(session[:user_id])
 
         expect(flash[:result_text]).must_equal "You must log in to do that"
-        must_redirect_to work_path(works(:album))
+        must_redirect_to root_path
       end
 
       it "succeeds for a logged-in user and a fresh user-vote pair" do
