@@ -4,6 +4,7 @@ describe WorksController do
   CATEGORIES = %w(albums books movies)
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
   let(:existing_work) { works(:album) }
+  let( :dans_work) {works(:movie)}
   describe "logged out " do
     describe "root" do
       it "succeeds with all media types" do
@@ -104,7 +105,15 @@ describe WorksController do
     end
     describe "destroy" do
       it "blocks logged out users" do
+        expect{
+          delete work_path(works(:album))
+        }.wont_change "Vote.count"
 
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to root_path
       end
     end
 
@@ -207,9 +216,17 @@ describe WorksController do
 
     describe "edit" do
       it "succeeds for an extant work ID" do
-        get edit_work_path(existing_work.id)
+        get edit_work_path(dans_work.id)
 
         must_respond_with :success
+      end
+
+      it "prevents user from editing work that they didn't add to database" do
+        get edit_work_path(existing_work.id)
+
+        expect(flash[:result_text]).must_equal "Forbidden access. You may be trying to modify a work you didn't add."
+
+        must_redirect_to work_path(existing_work.id)
       end
 
       it "renders 404 not_found for a bogus work ID" do
@@ -222,24 +239,27 @@ describe WorksController do
       end
     end
     describe "update" do
-      it "succeeds for valid data and an extant work ID" do
+      it "prevents user from updating work that they didnt create" do
+        
+      end
+      it "succeeds for valid data and an extant work ID belonging to the user" do
         updates = { work: { title: "Dirty Computer" } }
 
         expect {
-          put work_path(existing_work), params: updates
+          put work_path(dans_work.id), params: updates
         }.wont_change "Work.count"
-        updated_work = Work.find_by(id: existing_work.id)
+        updated_work = Work.find_by(id: dans_work.id)
 
         expect(updated_work.title).must_equal "Dirty Computer"
         must_respond_with :redirect
-        must_redirect_to work_path(existing_work.id)
+        must_redirect_to work_path(dans_work.id)
       end
 
-      it "renders bad_request for bogus data" do
+      it "renders not_found if updates have invalid params" do
         updates = { work: { title: nil } }
 
         expect {
-          put work_path(existing_work), params: updates
+          put work_path(dans_work.id), params: updates
         }.wont_change "Work.count"
 
         work = Work.find_by(id: existing_work.id)
@@ -247,19 +267,19 @@ describe WorksController do
         must_respond_with :not_found
       end
 
-      it "renders 404 not_found for a bogus work ID" do
+      it "redirects to all works index for a bogus work ID" do
         bogus_id = existing_work.id
         existing_work.destroy
 
         put work_path(bogus_id), params: { work: { title: "Test Title" } }
 
-        must_respond_with :not_found
+        must_redirect_to works_path
       end
     end
     describe "destroy" do
       it "succeeds for an extant work ID" do
         expect {
-          delete work_path(existing_work.id)
+          delete work_path(dans_work.id)
         }.must_change "Work.count", -1
 
         must_respond_with :redirect
@@ -274,7 +294,9 @@ describe WorksController do
           delete work_path(bogus_id)
         }.wont_change "Work.count"
 
-        must_respond_with :not_found
+        expect(flash[:result_text]).must_equal "Work not found."
+
+        must_redirect_to works_path
       end
     end
     describe "upvote" do

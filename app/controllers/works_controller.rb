@@ -93,10 +93,15 @@ class WorksController < ApplicationController
   def must_be_owner
     @current_user = User.find_by_id(session[:user_id])
     @work = Work.find_by(id: params[:id])
-    if @current_user.nil? || @work.user != @current_user
+    if @work.nil?
+      flash.now[:status] = :failure
+      flash.now[:result_text] = "Work not found."
+      redirect_to works_path
+      return
+    elsif @current_user.nil? || @work.user != @current_user
       flash.now[:status] = :failure
       flash.now[:result_text] = "Forbidden access. You may be trying to modify a work you didn't add."
-      redirect_back fallback_location: root_path
+      redirect_to work_path(@work.id)
       return
     end
   end
