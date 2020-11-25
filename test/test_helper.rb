@@ -21,4 +21,15 @@ class ActiveSupport::TestCase
   def setup
     OmniAuth.config.test_mode = true
   end
+
+  def mock_auth_hash(user)
+    return {
+      provider: user.provider,
+      uid: user.uid,
+      info: {
+        email: user.email,
+        nickname: user.name
+      }
+    }
+  end
 end
