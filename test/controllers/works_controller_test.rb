@@ -189,7 +189,15 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      expect{
+        post upvote_path(works(:album))
+      }.wont_change "Vote.count"
+
+      assert_nil(session[:user_id])
+
+      expect(flash[:result_text]).must_equal "You must log in to do that"
+      # forgot to do this last time i wrote this test, oops
+      must_redirect_to work_path(works(:album))
     end
 
     it "redirects to the work page after the user has logged out" do
