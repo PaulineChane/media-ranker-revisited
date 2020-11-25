@@ -2,6 +2,14 @@ require "test_helper"
 
 describe User do
   describe "relations" do
+    it "has many works" do
+      pauline = users(:pauline)
+      expect(pauline).must_respond_to :works
+      pauline.works.each do |work|
+        expect(work).must_be_kind_of Work
+      end
+    end
+
     it "has a list of votes" do
       dan = users(:dan)
       expect(dan).must_respond_to :votes

@@ -3,7 +3,9 @@ require "test_helper"
 describe Work do
   describe "relations" do
     it "has a user" do
-
+      a = works(:album)
+      expect(a).must_respond_to :user
+      expect(a.user).must_be_kind_of User
     end
     it "has a list of votes" do
       album = works(:album)
