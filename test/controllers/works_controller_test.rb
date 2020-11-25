@@ -200,16 +200,43 @@ describe WorksController do
       must_redirect_to work_path(works(:album))
     end
 
-    it "redirects to the work page after the user has logged out" do
-      skip
-    end
+    describe "logged in" do
+      before do
+        perform_login(users(:dan))
+      end
+      it "redirects to the work page after the user has logged out" do
+        expect(session[:user_id]).must_equal users(:dan).id
 
-    it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
-    end
+        delete logout_path params:{}
 
-    it "redirects to the work page if the user has already voted for that work" do
-      skip
+        expect{
+          post upvote_path(works(:album))
+        }.wont_change "Vote.count"
+
+        assert_nil(session[:user_id])
+
+        expect(flash[:result_text]).must_equal "You must log in to do that"
+        must_redirect_to work_path(works(:album))
+      end
+
+      it "succeeds for a logged-in user and a fresh user-vote pair" do
+        expect{
+          post upvote_path(works(:movie)) # no vote for dan for this work in fixtures
+        }.must_change "Vote.count", 1
+
+        expect(flash[:result_text]).must_equal "Successfully upvoted!"
+        # forgot to do this last time i wrote this test, oops
+        must_redirect_to work_path(works(:movie))
+      end
+
+      it "redirects to the work page if the user has already voted for that work" do
+        expect{
+          post upvote_path(works(:album))
+        }.wont_change "Vote.count", 1
+
+        expect(flash[:result_text]).must_equal "Could not upvote"
+        must_redirect_to work_path(works(:album))
+      end
     end
   end
 end

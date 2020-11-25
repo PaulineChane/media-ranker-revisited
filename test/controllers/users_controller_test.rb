@@ -33,7 +33,7 @@ describe UsersController do
       must_respond_with :not_found
     end
   end
-  
+
   describe "create" do
     it "logs in an existing user" do
       start_count = User.count
@@ -94,7 +94,7 @@ describe UsersController do
       must_redirect_to root_path
     end
 
-    it "guest users on that route" do
+    it "prevents logged out access to the route" do
       # we'll put this in in later waves
     end
   end
