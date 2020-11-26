@@ -54,6 +54,35 @@ describe User do
   end
 
   describe "build_from_github" do
-    
+    before do
+      @auth_hash = { provider: "github",
+                     uid: 13371337,
+                     "info"=> { "name" => "test",
+                                "nickname" => "nickname",
+                                "email" => "test@test.com"
+                          }
+                    }
+    end
+    it "builds a hash using github name when present" do
+      new_user = User.build_from_github(@auth_hash)
+
+      expect(new_user.valid?).must_equal true
+
+      expect(new_user.provider).must_equal @auth_hash[:provider]
+      expect(new_user.uid).must_equal @auth_hash[:uid]
+      expect(new_user.username).must_equal @auth_hash["info"]["name"]
+      expect(new_user.email).must_equal @auth_hash["info"]["email"]
+    end
+    it "builds a hash using github nickname when name not present" do
+      @auth_hash["info"]["name"] = nil
+      new_user = User.build_from_github(@auth_hash)
+
+      expect(new_user.valid?).must_equal true
+
+      expect(new_user.provider).must_equal @auth_hash[:provider]
+      expect(new_user.uid).must_equal @auth_hash[:uid]
+      expect(new_user.username).must_equal @auth_hash["info"]["nickname"]
+      expect(new_user.email).must_equal @auth_hash["info"]["email"]
+    end
   end
 end
