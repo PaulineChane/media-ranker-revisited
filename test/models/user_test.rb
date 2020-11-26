@@ -90,14 +90,14 @@ describe User do
     before do
       @auth_hash = { provider: "google_oauth2",
                      uid: "54321",
-                     "info"=> { "name" => "google",
-                                "email" => "google@test.com"
+                     "info"=> { "name" => "google test",
+                                "email" => "google_test@test.com"
                               }
                     }
     end
     it "builds a hash using google name when present" do
       new_user = User.build_from_provider(@auth_hash)
-
+      p new_user
       expect(new_user.valid?).must_equal true
 
       expect(new_user.provider).must_equal @auth_hash[:provider]
@@ -109,7 +109,7 @@ describe User do
       @auth_hash["info"]["name"] = nil
 
       new_user = User.build_from_provider(@auth_hash)
-
+      p new_user
       expect(new_user.valid?).must_equal true
 
       expect(new_user.provider).must_equal @auth_hash[:provider]
