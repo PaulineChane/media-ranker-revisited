@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
   get "/auth/github", as: "github_login"
   get "/auth/google_oauth2", as: "google_login"
+
+  # callbacks
   get "/auth/:provider/callback", to: "users#create", as: "auth_callback"
   delete "/logout", to: "users#destroy", as: "logout"
 
