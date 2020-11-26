@@ -48,8 +48,28 @@ describe UsersController do
         expect(User.count).must_equal start_count
       end
 
+      it "prevents a user from trying to make a second acct through same email, diff provider" do
+        user = User.new( provider: "google_oauth2", uid: "23252", username: "sock_pauline", email: "pauline@site.com")
+
+        expect{
+          perform_login(user)
+        }.wont_change User.count
+
+        must_redirect_to root_path
+
+        user = User.find_by(uid: user.uid, provider: user.provider)
+        assert_nil(user)
+
+        expect(flash[:result_text]).must_equal "Could not log in - you may created an account through another provider."
+        # check session
+        assert_nil(session[:user_id])
+        # check flash
+
+
+      end
+
       it "creates a new github user" do
-        user = User.new(provider: "github", uid: 99999, username: "new_user", email: "new@user.com")
+        user = User.new(provider: "github", uid: "99999", username: "new_user", email: "new@user.com")
         expect{
           perform_login(user)
         }.must_change "User.count", 1
@@ -62,7 +82,7 @@ describe UsersController do
       end
 
       it "creates a new google user" do
-        user = User.new(provider: "google_oauth2", uid: 91919, username: "new_user", email: "new@user.com")
+        user = User.new(provider: "google_oauth2", uid: "91919", username: "new_user", email: "new@user.com")
         expect{
           perform_login(user)
         }.must_change "User.count", 1
