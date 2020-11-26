@@ -7,6 +7,7 @@
 - Submit this project with a PR
 
 ## Learning Goals
+
 - Practice using OAuth in a web application
 - Practice using Session variables to track a user across multiple HTTP requests
 - Add tests to controllers to verify controller logic
@@ -26,6 +27,9 @@ In this assignment you will modify Media Ranker in two ways:
 
 Build your project using _branches_, with at least _one branch_ per wave.  As you finish a wave merge the changes into the main branch. Submit one pull request at the end once you are complete to submit the project.
 
+**Provided Tests**
+We have provided controller tests (commented out) for the `UsersController` which you can use, or adapt for your use.  We have similarly commented out fields in the fixtures which could be useful when you have implemented Oauth.
+
 ## Implementation Requirements
 
 ### Wave 1: Authentication via OAuth
@@ -42,14 +46,14 @@ Following the steps in the Textbook curriculum, add OAuth to your Media Ranker A
   - `UsersController`
   - `User` model
 
-### Wave 2: Controller Tests on `upvote` and `UsersController`
+### Optional Wave 2: Controller Tests on `upvote` and `UsersController`
 
 - Add tests around logging in functionality using OAuth mocks
 - Add tests around logging out functionality using OAuth mocks
 - Add tests to the `WorksController` `upvote` action using OAuth mocks
   - Be sure to test nominal and edge cases
 
-### Wave 3: Basic Authorization (Page Access)
+### Optional Wave 3: Basic Authorization (Page Access)
 
 Create and test authorization logic to enforce rules that govern what pages on the site users and guests (unauthenticated users) can view.
 
