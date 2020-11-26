@@ -1,6 +1,33 @@
 <h2>User Summary: <%= link_to @user.username, user_path(@user) %></h2>
 <p>Joined site <%= render_date @user.created_at %></p>
+<section class="user-votes__container">
+  <h3 class="user-votes__header">Works Added</h3>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Media Title</th>
+      <th>Created By</th>
+      <th>Published</th>
+      <th>Category</th>
+      <th>Votes</th>
+      <th>Created On</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @user.works.each do |work| %>
+      <tr>
+        <td><%= link_to work.title, work_path(work) %></td>
+        <td><%= work.creator %></td>
+        <td><%= work.publication_year %></td>
+        <td><%= work.category.capitalize %></td>
+        <td><%= work.votes.count %></td>
+        <td><%= render_date work.created_at %></td>
 
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</section>
 <section class="user-votes__container">
   <h3 class="user-votes__header">Votes</h3>
   <table class="table">
