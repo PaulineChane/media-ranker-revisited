@@ -13,10 +13,14 @@ class User < ApplicationRecord
     user.uid = auth_hash[:uid]
     user.provider = auth_hash[:provider]
 
-    if auth_hash["info"]["name"].nil?
+    if auth_hash["info"]["name"].nil? # no name provided, get it from somewhere else
       user.username = auth_hash[:provider] == 'github' ? auth_hash["info"]["nickname"] : auth_hash["info"]["email"].split("@")[0]
+
+      # name exists but because we can create some by email in another provider
+      # we have to account that someone can now have the same username but two different
+      # identities.
     else
-      user.username = auth_hash["info"]["name"]
+      user.username = User.find_by_username(auth_hash["info"]["name"]).nil? ? auth_hash["info"]["name"] : "#{auth_hash["info"]["name"]}#{User.count}"
     end
 
     user.email = auth_hash["info"]["email"]

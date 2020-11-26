@@ -55,7 +55,7 @@ describe User do
     it "prevents attempts by user with same email to make multiple accounts" do
       # we have users in the fixtures
       # we'll use me! pauline!
-      user2 = User.new(provider: 'google_oauth2', username: "pauline", uid: 23456, email: "pauline@site.com" )
+      user2 = User.new(provider: 'google_oauth2', username: "pauline", uid: "23456", email: "pauline@site.com" )
       result = user2.save
       expect(result).must_equal false
 
@@ -109,7 +109,6 @@ describe User do
     end
     it "builds a hash using google name when present" do
       new_user = User.build_from_provider(@auth_hash)
-      p new_user
       expect(new_user.valid?).must_equal true
 
       expect(new_user.provider).must_equal @auth_hash[:provider]
@@ -121,12 +120,24 @@ describe User do
       @auth_hash["info"]["name"] = nil
 
       new_user = User.build_from_provider(@auth_hash)
-      p new_user
       expect(new_user.valid?).must_equal true
 
       expect(new_user.provider).must_equal @auth_hash[:provider]
       expect(new_user.uid).must_equal @auth_hash[:uid]
       expect(new_user.username).must_equal @auth_hash["info"]["email"].split("@")[0]
+      expect(new_user.email).must_equal @auth_hash["info"]["email"]
+    end
+
+    it "allows the creation of an account with different email but same name to have a unique username" do
+      @auth_hash["info"]["name"] = "google" # already in fixtures
+      suffix = User.count
+
+      new_user = User.build_from_provider(@auth_hash)
+      expect(new_user.valid?).must_equal true
+
+      expect(new_user.provider).must_equal @auth_hash[:provider]
+      expect(new_user.uid).must_equal @auth_hash[:uid]
+      expect(new_user.username).must_equal "#{@auth_hash["info"]["name"]}#{suffix}"
       expect(new_user.email).must_equal @auth_hash["info"]["email"]
     end
   end
