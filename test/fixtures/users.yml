@@ -17,3 +17,9 @@ pauline:
   uid: 23456
   username: pauline
   email: pauline@site.com
+
+google:
+  provider: google_oauth2
+  uid: 00000000
+  username: google
+  email: google@google.com

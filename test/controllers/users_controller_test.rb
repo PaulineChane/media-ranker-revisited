@@ -24,7 +24,7 @@ describe UsersController do
     end
 
     describe "create" do
-      it "logs in an existing user" do
+      it "logs in an existing github user" do
         start_count = User.count
         user = users(:dan)
 
@@ -36,8 +36,33 @@ describe UsersController do
         expect(User.count).must_equal start_count
       end
 
-      it "creates a new user" do
+      it "logs in an existing google user" do
+        start_count = User.count
+        user = users(:google)
+
+        perform_login(user)
+        must_redirect_to root_path
+        expect(session[:user_id]).must_equal  user.id
+
+        # Should *not* have created a new user
+        expect(User.count).must_equal start_count
+      end
+
+      it "creates a new github user" do
         user = User.new(provider: "github", uid: 99999, username: "new_user", email: "new@user.com")
+        expect{
+          perform_login(user)
+        }.must_change "User.count", 1
+
+
+        must_redirect_to root_path
+
+        # The new user's ID should be set in the session
+        expect(session[:user_id]).must_equal User.last.id
+      end
+
+      it "creates a new google user" do
+        user = User.new(provider: "google_oauth2", uid: 91919, username: "new_user", email: "new@user.com")
         expect{
           perform_login(user)
         }.must_change "User.count", 1
