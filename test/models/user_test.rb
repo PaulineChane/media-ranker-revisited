@@ -56,7 +56,7 @@ describe User do
   describe "build_from_provider (github)" do
     before do
       @auth_hash = { provider: "github",
-                     uid: 13371337,
+                     uid: "13371337",
                      "info"=> { "name" => "test",
                                 "nickname" => "nickname",
                                 "email" => "test@test.com"
@@ -89,7 +89,7 @@ describe User do
   describe "build_from_provider (google)" do
     before do
       @auth_hash = { provider: "google_oauth2",
-                     uid: 54321,
+                     uid: "54321",
                      "info"=> { "name" => "google",
                                 "email" => "google@test.com"
                               }

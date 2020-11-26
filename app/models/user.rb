@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   def self.build_from_provider(auth_hash)
     user = User.new
-    user.uid = auth_hash[:uid]
+    user.uid = auth_hash[:uid].to_s
     user.provider = auth_hash[:provider]
 
     if auth_hash["info"]["name"].nil?
