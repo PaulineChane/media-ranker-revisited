@@ -88,7 +88,7 @@ describe User do
 
   describe "build_from_provider (google)" do
     before do
-      @auth_hash = { provider: "google",
+      @auth_hash = { provider: "google_oauth2",
                      uid: 54321,
                      "info"=> { "name" => "google",
                                 "email" => "google@test.com"
