@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :ranked_works, through: :votes, source: :work
 
   validates :username, uniqueness: true, presence: true
-  validates :email, uniqueness: true, presence: true
+  validates :email, presence: true, uniqueness: true
   validates :uid, uniqueness: true, presence: true
   validates :provider, presence: true
 

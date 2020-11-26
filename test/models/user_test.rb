@@ -51,6 +51,18 @@ describe User do
         expect(user2.errors.messages).must_include field
       end
     end
+
+    it "prevents attempts by user with same email to make multiple accounts" do
+      # we have users in the fixtures
+      # we'll use me! pauline!
+      user2 = User.new(provider: 'google_oauth2', username: "pauline", uid: 23456, email: "pauline@site.com" )
+      result = user2.save
+      expect(result).must_equal false
+
+      [:username, :uid, :email].each do |field|
+        expect(user2.errors.messages).must_include field
+      end
+    end
   end
 
   describe "build_from_provider (github)" do
