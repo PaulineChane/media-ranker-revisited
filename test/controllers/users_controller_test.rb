@@ -94,6 +94,23 @@ describe UsersController do
         expect(session[:user_id]).must_equal User.last.id
       end
 
+      # this is possible because of the two different providers
+      # this is especially so because if a google name does not exist
+      # the code takes from the email handle which would be a potentially valid input
+      # in github
+      it "creates a new user that has the same name but different email" do
+        user = User.new(provider: "google_oauth2", uid: "91919", username: "google", email: "new@user.com")
+        expect{
+          perform_login(user)
+        }.must_change "User.count", 1
+
+
+        must_redirect_to root_path
+
+        # The new user's ID should be set in the session
+        expect(session[:user_id]).must_equal User.last.id
+      end
+
       it "redirects to the login route if given invalid user data" do
         # no username -> invalid
         user = User.new(provider: 'github',  uid: nil, username: nil, email: 'no@uid.com')
