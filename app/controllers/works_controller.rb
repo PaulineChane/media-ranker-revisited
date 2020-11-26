@@ -95,13 +95,13 @@ class WorksController < ApplicationController
     @current_user = User.find_by_id(session[:user_id])
     @work = Work.find_by(id: params[:id])
     if @work.nil?
-      flash.now[:status] = :failure
-      flash.now[:result_text] = "Work not found."
+      flash[:status] = :failure
+      flash[:result_text] = "Work not found."
       redirect_to works_path
       return
     elsif @current_user.nil? || @work.user != @current_user
-      flash.now[:status] = :failure
-      flash.now[:result_text] = "Forbidden access. You may be trying to modify a work you didn't add."
+      flash[:status] = :failure
+      flash[:result_text] = "Forbidden access. You may be trying to modify a work you didn't add."
       redirect_to work_path(@work.id)
       return
     end
