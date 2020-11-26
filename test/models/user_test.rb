@@ -53,7 +53,7 @@ describe User do
     end
   end
 
-  describe "build_from_provider" do
+  describe "build_from_provider (github)" do
     before do
       @auth_hash = { provider: "github",
                      uid: 13371337,
@@ -82,6 +82,39 @@ describe User do
       expect(new_user.provider).must_equal @auth_hash[:provider]
       expect(new_user.uid).must_equal @auth_hash[:uid]
       expect(new_user.username).must_equal @auth_hash["info"]["nickname"]
+      expect(new_user.email).must_equal @auth_hash["info"]["email"]
+    end
+  end
+
+  describe "build_from_provider (google)" do
+    before do
+      @auth_hash = { provider: "google",
+                     uid: 54321,
+                     "info"=> { "name" => "google",
+                                "email" => "google@test.com"
+                              }
+                    }
+    end
+    it "builds a hash using google name when present" do
+      new_user = User.build_from_provider(@auth_hash)
+
+      expect(new_user.valid?).must_equal true
+
+      expect(new_user.provider).must_equal @auth_hash[:provider]
+      expect(new_user.uid).must_equal @auth_hash[:uid]
+      expect(new_user.username).must_equal @auth_hash["info"]["name"]
+      expect(new_user.email).must_equal @auth_hash["info"]["email"]
+    end
+    it "builds a hash using first part of email when name not present" do
+      @auth_hash["info"]["name"] = nil
+
+      new_user = User.build_from_provider(@auth_hash)
+
+      expect(new_user.valid?).must_equal true
+
+      expect(new_user.provider).must_equal @auth_hash[:provider]
+      expect(new_user.uid).must_equal @auth_hash[:uid]
+      expect(new_user.username).must_equal @auth_hash["info"]["email"].split("@")[0]
       expect(new_user.email).must_equal @auth_hash["info"]["email"]
     end
   end
