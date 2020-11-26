@@ -53,7 +53,7 @@ describe User do
     end
   end
 
-  describe "build_from_github" do
+  describe "build_from_provider" do
     before do
       @auth_hash = { provider: "github",
                      uid: 13371337,
@@ -64,7 +64,7 @@ describe User do
                     }
     end
     it "builds a hash using github name when present" do
-      new_user = User.build_from_github(@auth_hash)
+      new_user = User.build_from_provider(@auth_hash)
 
       expect(new_user.valid?).must_equal true
 
@@ -75,7 +75,7 @@ describe User do
     end
     it "builds a hash using github nickname when name not present" do
       @auth_hash["info"]["name"] = nil
-      new_user = User.build_from_github(@auth_hash)
+      new_user = User.build_from_provider(@auth_hash)
 
       expect(new_user.valid?).must_equal true
 
